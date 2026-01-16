@@ -11,11 +11,12 @@ import CustomerList from './components/CustomerList'
 import CustomerForm from './components/CustomerForm'
 import CustomerDetail from './components/CustomerDetail'
 import SaleForm from './components/SaleForm'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const [customers, setCustomers] = useState([])
   const [sales, setSales] = useState([])
-  const [currentView, setCurrentView] = useState('list') // 'list' | 'detail' | 'addCustomer' | 'editCustomer' | 'recordSale'
+  const [currentView, setCurrentView] = useState('list') // 'list' | 'detail' | 'addCustomer' | 'editCustomer' | 'recordSale' | 'dashboard'
   const [selectedCustomerId, setSelectedCustomerId] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
 
@@ -115,6 +116,12 @@ function App() {
     setSuccessMessage(null)
   }
 
+  const handleShowDashboard = () => {
+    setCurrentView('dashboard')
+    setSelectedCustomerId(null)
+    setSuccessMessage(null)
+  }
+
   // Get selected customer
   const selectedCustomer = selectedCustomerId
     ? customers.find(c => c.id === selectedCustomerId)
@@ -132,12 +139,20 @@ function App() {
           <div className="list-container">
             <div className="list-header">
               <h2>Customers</h2>
-              <button
-                className="btn btn-primary"
-                onClick={handleShowAddCustomer}
-              >
-                + Add Customer
-              </button>
+              <div className="header-buttons">
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleShowDashboard}
+                >
+                  View Dashboard
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleShowAddCustomer}
+                >
+                  + Add Customer
+                </button>
+              </div>
             </div>
             <CustomerList
               customers={customers}
@@ -184,6 +199,14 @@ function App() {
             customer={selectedCustomer}
             onSubmit={handleSaleSubmit}
             onCancel={handleCancel}
+          />
+        )}
+
+        {currentView === 'dashboard' && (
+          <Dashboard
+            sales={sales}
+            customers={customers}
+            onBack={() => setCurrentView('list')}
           />
         )}
       </main>
