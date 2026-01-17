@@ -130,8 +130,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Sales App</h1>
-        <p className="subtitle">Customer Loyalty & Sales Tracking</p>
+        <h1>Tally</h1>
       </header>
 
       <main className="app-main">
@@ -141,10 +140,10 @@ function App() {
               <h2>Customers</h2>
               <div className="header-buttons">
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-ghost"
                   onClick={handleShowDashboard}
                 >
-                  View Dashboard
+                  Dashboard
                 </button>
                 <button
                   className="btn btn-primary"

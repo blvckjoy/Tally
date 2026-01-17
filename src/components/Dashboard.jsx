@@ -81,7 +81,8 @@ function Dashboard({ sales, customers, onBack }) {
           <ol className="top-customers-list">
             {topCustomers.map(({ customer, totalPoints }, index) => (
               <li key={customer.id} className="top-customer-item">
-                {customer.name} - {totalPoints} points
+                <span className="customer-name">{customer.name}</span>
+                <span className="customer-points">{totalPoints} pts</span>
               </li>
             ))}
           </ol>
