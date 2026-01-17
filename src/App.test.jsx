@@ -75,7 +75,7 @@ describe('App', () => {
     it('shows dashboard button on customer list', () => {
       render(<App />)
 
-      const dashboardButton = screen.getByRole('button', { name: /view dashboard/i })
+      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
       expect(dashboardButton).toBeInTheDocument()
     })
 
@@ -84,7 +84,7 @@ describe('App', () => {
       render(<App />)
 
       // Click the dashboard button
-      const dashboardButton = screen.getByRole('button', { name: /view dashboard/i })
+      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
       await user.click(dashboardButton)
 
       // Should now show the Dashboard component
@@ -98,7 +98,7 @@ describe('App', () => {
       render(<App />)
 
       // Navigate to dashboard
-      const dashboardButton = screen.getByRole('button', { name: /view dashboard/i })
+      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
       await user.click(dashboardButton)
 
       // Click back button in Dashboard

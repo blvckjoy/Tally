@@ -130,7 +130,10 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Tally</h1>
+        <div className="app-brand">
+          <img src="/tally-logo.svg" alt="" className="app-logo" />
+          <h1>Tally</h1>
+        </div>
       </header>
 
       <main className="app-main">

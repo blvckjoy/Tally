@@ -13,6 +13,17 @@
   box-shadow: var(--shadow-xs);
 }
 
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.app-logo {
+  width: 20px;
+  height: 34px;
+}
+
 .app-header h1 {
   margin: 0;
   font-family: var(--font-display);

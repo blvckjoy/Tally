@@ -1,0 +1,12 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tally marks: compact version for favicon -->
+  <g stroke="#2D5A3D" stroke-width="2.5" stroke-linecap="round">
+    <!-- Vertical lines -->
+    <line x1="6" y1="6" x2="6" y2="26"/>
+    <line x1="12" y1="6" x2="12" y2="26"/>
+    <line x1="18" y1="6" x2="18" y2="26"/>
+    <line x1="24" y1="6" x2="24" y2="26"/>
+    <!-- Diagonal strike-through -->
+    <line x1="4" y1="22" x2="26" y2="10"/>
+  </g>
+</svg>

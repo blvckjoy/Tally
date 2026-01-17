@@ -164,9 +164,9 @@ describe('Dashboard', () => {
       )
 
       expect(screen.getByText(/Alice Johnson/)).toBeInTheDocument()
-      expect(screen.getByText(/25 points/)).toBeInTheDocument()
+      expect(screen.getByText(/25 pts/)).toBeInTheDocument()
       expect(screen.getByText(/Bob Smith/)).toBeInTheDocument()
-      expect(screen.getByText(/15 points/)).toBeInTheDocument()
+      expect(screen.getByText(/15 pts/)).toBeInTheDocument()
     })
 
     it('shows empty state when no customers have points', () => {
