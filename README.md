@@ -1,16 +1,53 @@
-# React + Vite
+# Tally
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A lightweight tool for tracking customers, recording sales, and recognizing loyalty without complexity.
 
-Currently, two official plugins are available:
+Tally is designed for small businesses that want to track regular customers and sales without heavy software or setup.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+> **Status:** MVP — opinionated defaults, no backend, and intentionally simple.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Customer Management** — Add, edit, and organize your customers
+- **Sales Recording** — Log transactions with optional descriptions
+- **Loyalty Points** — Automatic point tracking (1 point per ₦1,000 spent)
+- **Rewards Recognition** — Visual indicators when customers reach reward thresholds
+- **Dashboard** — At-a-glance metrics for today, this month, and top customers
+
+
+## Tech Stack
+
+- React 18
+- Vite
+- Local Storage (no backend required)
+- CSS with custom design system
+
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+
+## Design
+
+Tally uses a "Warm Ledger" design system — the precision of financial software with the warmth of a personal business tool.
+
+- **Typography**: Fraunces (display) + DM Sans (body)
+- **Colors**: Warm neutrals with forest green accents
+- **Philosophy**: Numbers are the hero. Calm, professional, scannable.
+
+## License
+
+MIT
