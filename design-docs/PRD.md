@@ -174,3 +174,197 @@ The product is successful if:
 
 > This PRD defines **what** the product is and **what it must do**.
 > All decisions are justified in `DECISIONS.md`.
+
+
+---
+
+## Configurable Loyalty Rules (v1)
+
+### Status
+Approved for implementation
+
+---
+
+### 1. Problem Statement
+
+Different businesses define “loyalty” differently.  
+The current fixed loyalty rule (₦1,000 = 1 point, reward at 50 points) works as a default but limits flexibility across use cases.
+
+Users need basic control over:
+- How loyalty points are earned
+- When a reward becomes available
+
+This must be done without introducing complexity, migrations, or trust-breaking recalculations.
+
+---
+
+### 2. Goals
+
+**Primary Goals**
+- Allow users to configure loyalty rules to match their business
+- Preserve historical sales and point data
+- Keep the system simple and predictable
+
+**Out of Scope (Explicitly Not Included)**
+- Retroactive point recalculation
+- Multiple reward tiers
+- Point expiration
+- Bonus points or promotions
+- Refunds or point deductions
+- Accumulation across multiple transactions
+- Customer-visible loyalty configuration
+
+---
+
+### 3. Core Decision (Locked)
+
+**Loyalty rule changes apply to new sales only.**
+
+- Past sales retain their original `pointsEarned`
+- Historical loyalty totals are never recalculated
+- Data integrity and user trust take precedence
+
+This decision is locked for v1.
+
+---
+
+### 4. Configurable Parameters (v1)
+
+#### 4.1 Points Earning Rule
+
+**Definition**  
+Spend ₦X in a single sale → earn 1 loyalty point
+
+- Field: `pointsPerUnit`
+- Type: Integer
+- Default: `1000`
+- Minimum: `1`
+
+Calculation:
+
+    pointsEarned = Math.floor(amount / pointsPerUnit)
+
+---
+
+#### 4.2 Reward Threshold
+
+**Definition**  
+Minimum total points required to show “Reward Available”
+
+- Field: `rewardThreshold`
+- Type: Integer
+- Default: `50`
+- Minimum: `1`
+
+Calculation:
+
+    rewardAvailable = totalPoints >= rewardThreshold
+
+---
+
+### 5. Data Model
+
+**Loyalty Settings Object**
+
+    {
+      pointsPerUnit: number,     // default: 1000
+      rewardThreshold: number   // default: 50
+    }
+
+**Storage**
+- Key: `salesApp_loyaltySettings`
+- Storage type: `localStorage`
+- Stored once per user
+- Loaded at application startup
+
+**Defaults**
+- If settings are missing or invalid, defaults are used
+- Application continues without errors
+
+---
+
+### 6. Behavioral Rules
+
+**Sale Creation**
+- Loyalty settings are read at time of sale creation
+- `pointsEarned` is calculated once and stored on the sale
+- Stored points are immutable
+
+**Loyalty Display**
+- Total points are derived by summing stored `pointsEarned`
+- Reward availability uses the current `rewardThreshold`
+
+**Backward Compatibility**
+- Existing sales remain unchanged
+- No data migrations required
+- No recalculation of historical points
+
+---
+
+### 7. User Experience
+
+**Settings Location**
+- Accessible from Dashboard → Settings
+- Not shown in customer-facing views
+
+**Settings UI (v1)**
+
+    Loyalty Settings
+
+    Spend ₦ [ 1000 ] → Earn 1 point
+    Reward available at [ 50 ] points
+
+    [ Save ]
+
+**Required Helper Text**
+
+> Changes apply to future sales only. Past sales won’t be affected.
+
+---
+
+### 8. Validation Rules
+
+**Required**
+- `pointsPerUnit` must be an integer ≥ 1
+- `rewardThreshold` must be an integer ≥ 1
+- Non-numeric input is blocked
+
+**Optional Warnings (Non-blocking)**
+- Very low reward thresholds
+- Very high spend-per-point values
+
+---
+
+### 9. Success Criteria
+
+- Users can configure loyalty rules without breaking existing data
+- New sales respect updated rules immediately
+- Historical points remain unchanged
+- No crashes or recalculation errors
+- Minimal cognitive load in the UI
+
+---
+
+### 10. Risks & Mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Users expect past points to change | Explicit helper text |
+| Confusion about point differences | Sale-level immutability |
+| Pressure for advanced rules | Strict v1 scope |
+
+---
+
+### 11. Future Considerations (Not Implemented)
+
+- Retroactive recalculation with migration strategy
+- Accumulation across transactions
+- Expiring points
+- Multiple reward levels
+- Customer-visible loyalty explanations
+
+---
+
+**Summary**
+
+Configurable Loyalty v1 introduces two controlled parameters—points earning and reward threshold—while preserving simplicity, predictability, and trust. Changes are forward-only, historical data is immutable, and complexity is intentionally deferred.
