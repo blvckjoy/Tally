@@ -14,7 +14,7 @@ export function getLoyaltySettings() {
 
   try {
     const parsed = JSON.parse(stored)
-    return {
+    const result = {
       pointsPerUnit: isValidSetting(parsed.pointsPerUnit)
         ? parsed.pointsPerUnit
         : DEFAULT_SETTINGS.pointsPerUnit,
@@ -22,6 +22,11 @@ export function getLoyaltySettings() {
         ? parsed.rewardThreshold
         : DEFAULT_SETTINGS.rewardThreshold,
     }
+    // Include updatedAt if present (backward compatible)
+    if (parsed.updatedAt) {
+      result.updatedAt = parsed.updatedAt
+    }
+    return result
   } catch {
     return { ...DEFAULT_SETTINGS }
   }
@@ -42,7 +47,8 @@ export function saveLoyaltySettings(settings) {
     throw new Error('rewardThreshold must be an integer >= 1')
   }
 
-  const toSave = { pointsPerUnit, rewardThreshold }
+  const updatedAt = new Date().toISOString()
+  const toSave = { pointsPerUnit, rewardThreshold, updatedAt }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
 
   return toSave

@@ -7,6 +7,8 @@ import {
 function LoyaltySettings() {
   const [pointsPerUnit, setPointsPerUnit] = useState('')
   const [rewardThreshold, setRewardThreshold] = useState('')
+  const [updatedAt, setUpdatedAt] = useState(null)
+  const [justSaved, setJustSaved] = useState(false)
   const [errors, setErrors] = useState({})
   const [saveStatus, setSaveStatus] = useState(null)
 
@@ -15,7 +17,23 @@ function LoyaltySettings() {
     const settings = getLoyaltySettings()
     setPointsPerUnit(String(settings.pointsPerUnit))
     setRewardThreshold(String(settings.rewardThreshold))
+    if (settings.updatedAt) {
+      setUpdatedAt(settings.updatedAt)
+    }
   }, [])
+
+  const formatTimestamp = (isoString) => {
+    if (!isoString) return null
+    const date = new Date(isoString)
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    })
+  }
 
   const validateField = (name, value) => {
     const num = parseInt(value, 10)
@@ -58,11 +76,15 @@ function LoyaltySettings() {
     if (!isValid()) return
 
     try {
-      saveLoyaltySettings({
+      const saved = saveLoyaltySettings({
         pointsPerUnit: parseInt(pointsPerUnit, 10),
         rewardThreshold: parseInt(rewardThreshold, 10),
       })
+      setUpdatedAt(saved.updatedAt)
+      setJustSaved(true)
       setSaveStatus('success')
+      // Clear "Just now" after 5 seconds
+      setTimeout(() => setJustSaved(false), 5000)
     } catch (error) {
       setSaveStatus('error')
     }
@@ -114,6 +136,12 @@ function LoyaltySettings() {
         <div className="settings-helper">
           Changes apply to future sales only. Past sales won't be affected.
         </div>
+
+        {updatedAt && (
+          <div className="settings-timestamp">
+            Last updated: {justSaved ? 'Just now' : formatTimestamp(updatedAt)}
+          </div>
+        )}
 
         <button
           className="btn btn-primary settings-save-btn"

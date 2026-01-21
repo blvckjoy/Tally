@@ -185,4 +185,41 @@ describe('LoyaltySettings', () => {
       expect(screen.getByText(/points$/)).toBeInTheDocument()
     })
   })
+
+  describe('Last updated timestamp', () => {
+    it('does not show timestamp when no settings have been saved', () => {
+      render(<LoyaltySettings />)
+
+      expect(screen.queryByText(/Last updated/i)).not.toBeInTheDocument()
+    })
+
+    it('shows timestamp when settings have updatedAt', () => {
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 25 })
+
+      render(<LoyaltySettings />)
+
+      expect(screen.getByText(/Last updated/i)).toBeInTheDocument()
+    })
+
+    it('shows "Just now" immediately after saving', async () => {
+      const user = userEvent.setup()
+      render(<LoyaltySettings />)
+
+      const saveButton = screen.getByRole('button', { name: /Save Settings/i })
+      await user.click(saveButton)
+
+      expect(screen.getByText(/Just now/i)).toBeInTheDocument()
+    })
+
+    it('does not show timestamp for legacy settings without updatedAt', () => {
+      localStorage.setItem(
+        'salesApp_loyaltySettings',
+        JSON.stringify({ pointsPerUnit: 500, rewardThreshold: 25 })
+      )
+
+      render(<LoyaltySettings />)
+
+      expect(screen.queryByText(/Last updated/i)).not.toBeInTheDocument()
+    })
+  })
 })
