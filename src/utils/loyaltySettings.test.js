@@ -69,16 +69,16 @@ describe('loyaltySettings', () => {
   })
 
   describe('saveLoyaltySettings', () => {
-    it('should save valid settings and return them', () => {
+    it('should save valid settings and return them with updatedAt', () => {
       const result = saveLoyaltySettings({
         pointsPerUnit: 2000,
         rewardThreshold: 75,
       })
 
-      expect(result).toEqual({
-        pointsPerUnit: 2000,
-        rewardThreshold: 75,
-      })
+      expect(result.pointsPerUnit).toBe(2000)
+      expect(result.rewardThreshold).toBe(75)
+      expect(result.updatedAt).toBeDefined()
+      expect(new Date(result.updatedAt).toISOString()).toBe(result.updatedAt)
     })
 
     it('should persist settings to localStorage', () => {
@@ -86,10 +86,8 @@ describe('loyaltySettings', () => {
 
       const settings = getLoyaltySettings()
 
-      expect(settings).toEqual({
-        pointsPerUnit: 500,
-        rewardThreshold: 25,
-      })
+      expect(settings.pointsPerUnit).toBe(500)
+      expect(settings.rewardThreshold).toBe(25)
     })
 
     it('should reject null settings', () => {
@@ -138,6 +136,36 @@ describe('loyaltySettings', () => {
       expect(() =>
         saveLoyaltySettings({ pointsPerUnit: 1000, rewardThreshold: 50.5 })
       ).toThrow('rewardThreshold must be an integer >= 1')
+    })
+  })
+
+  describe('updatedAt timestamp', () => {
+    it('should include updatedAt when reading saved settings', () => {
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 25 })
+
+      const settings = getLoyaltySettings()
+
+      expect(settings.updatedAt).toBeDefined()
+      expect(new Date(settings.updatedAt).toISOString()).toBe(settings.updatedAt)
+    })
+
+    it('should not include updatedAt for legacy settings without timestamp', () => {
+      localStorage.setItem(
+        'salesApp_loyaltySettings',
+        JSON.stringify({ pointsPerUnit: 500, rewardThreshold: 25 })
+      )
+
+      const settings = getLoyaltySettings()
+
+      expect(settings.updatedAt).toBeUndefined()
+      expect(settings.pointsPerUnit).toBe(500)
+      expect(settings.rewardThreshold).toBe(25)
+    })
+
+    it('should not include updatedAt when no settings exist', () => {
+      const settings = getLoyaltySettings()
+
+      expect(settings.updatedAt).toBeUndefined()
     })
   })
 })
