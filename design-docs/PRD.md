@@ -368,3 +368,61 @@ Calculation:
 **Summary**
 
 Configurable Loyalty v1 introduces two controlled parameters—points earning and reward threshold—while preserving simplicity, predictability, and trust. Changes are forward-only, historical data is immutable, and complexity is intentionally deferred.
+
+
+
+## Internal Update — Configurable Loyalty (Completed)
+
+### Status
+**Configurable Loyalty v1 is complete and shipped.**
+
+### What was delivered
+Tally’s loyalty system has been evolved from fixed rules to **user-configurable, forward-only loyalty rules**, without breaking existing data or user trust.
+
+The system now supports:
+
+- **Configurable earning rule**
+  Users can define how much a customer must spend to earn 1 point (e.g. ₦1,000 → 1 point).
+
+- **Configurable reward threshold**
+  Users can define how many points qualify a customer for a reward.
+
+- **Forward-only behavior (intentional)**
+  Loyalty rule changes apply only to *future sales*.
+  Past sales and earned points are never recalculated or mutated.
+
+- **Derived loyalty logic**
+  - Points are stored per sale at creation time.
+  - Total points and reward eligibility are derived at display time.
+  - This ensures correctness, transparency, and immutability.
+
+- **Dashboard-integrated Loyalty Settings UI**
+  - Simple, minimal settings UI under Dashboard
+  - Input validation enforced (integers ≥ 1)
+  - Clear helper text explaining forward-only behavior
+
+- **“Last updated” indicator**
+  - Shows when loyalty rules were last changed
+  - Reinforces user confidence that settings were saved
+  - Backward compatible with existing data
+
+### Engineering principles upheld
+- No retroactive data changes
+- No silent recalculation of historical values
+- Backward-compatible storage evolution
+- Full automated test coverage for all new logic
+- Incremental, phase-based commits for traceability
+
+### Current limitations (by design)
+- Loyalty rules are global (not per customer)
+- No reward redemption tracking yet
+- No previews or simulations of rule changes
+- No customer-facing visibility of loyalty rules
+
+These are **intentional MVP constraints**, not omissions.
+
+### Outcome
+Tally now supports **trustworthy, configurable loyalty rules** suitable for real-world use, while preserving simplicity and data integrity.
+
+### Next planned area
+**Navigation & Mobile UX polish**, starting with evaluation of a bottom navigation bar for mobile users.
