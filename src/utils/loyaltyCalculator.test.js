@@ -1,11 +1,16 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import {
   getCustomerTotalPoints,
   isRewardAvailable,
   getCustomerSales,
 } from './loyaltyCalculator'
+import { saveLoyaltySettings } from './loyaltySettings'
 
 describe('loyaltyCalculator', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   describe('getCustomerTotalPoints', () => {
     it('should return 0 for customer with no sales', () => {
       const sales = []
@@ -105,6 +110,63 @@ describe('loyaltyCalculator', () => {
     it('should return empty array when sales is undefined', () => {
       const result = getCustomerSales('customer_1', undefined)
       expect(result).toEqual([])
+    })
+  })
+
+  describe('configurable rewardThreshold', () => {
+    it('should use default threshold (50) when no settings exist', () => {
+      expect(isRewardAvailable(49)).toBe(false)
+      expect(isRewardAvailable(50)).toBe(true)
+      expect(isRewardAvailable(51)).toBe(true)
+    })
+
+    it('should use custom threshold from settings', () => {
+      saveLoyaltySettings({ pointsPerUnit: 1000, rewardThreshold: 25 })
+
+      expect(isRewardAvailable(24)).toBe(false)
+      expect(isRewardAvailable(25)).toBe(true)
+      expect(isRewardAvailable(26)).toBe(true)
+    })
+
+    it('should respect higher custom threshold', () => {
+      saveLoyaltySettings({ pointsPerUnit: 1000, rewardThreshold: 100 })
+
+      expect(isRewardAvailable(50)).toBe(false)
+      expect(isRewardAvailable(99)).toBe(false)
+      expect(isRewardAvailable(100)).toBe(true)
+    })
+
+    it('should not recalculate stored pointsEarned', () => {
+      const sales = [
+        { id: '1', customerId: 'customer-1', pointsEarned: 30, amount: 30000 },
+      ]
+
+      // Points calculation uses stored pointsEarned, not amount
+      const totalPoints = getCustomerTotalPoints('customer-1', sales)
+      expect(totalPoints).toBe(30)
+
+      // Changing settings does not affect stored points
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 25 })
+
+      const totalPointsAfter = getCustomerTotalPoints('customer-1', sales)
+      expect(totalPointsAfter).toBe(30) // Still 30, not recalculated
+    })
+
+    it('should derive reward availability at display time', () => {
+      const sales = [
+        { id: '1', customerId: 'customer-1', pointsEarned: 40, amount: 40000 },
+      ]
+
+      const totalPoints = getCustomerTotalPoints('customer-1', sales)
+
+      // With default threshold (50), not eligible
+      expect(isRewardAvailable(totalPoints)).toBe(false)
+
+      // Change threshold to 30
+      saveLoyaltySettings({ pointsPerUnit: 1000, rewardThreshold: 30 })
+
+      // Now eligible with same points
+      expect(isRewardAvailable(totalPoints)).toBe(true)
     })
   })
 })

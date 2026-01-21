@@ -1,4 +1,4 @@
-const REWARD_THRESHOLD = 50
+import { getLoyaltySettings } from './loyaltySettings'
 
 export function getCustomerTotalPoints(customerId, sales = []) {
   return (sales || [])
@@ -7,7 +7,8 @@ export function getCustomerTotalPoints(customerId, sales = []) {
 }
 
 export function isRewardAvailable(totalPoints) {
-  return totalPoints >= REWARD_THRESHOLD
+  const { rewardThreshold } = getLoyaltySettings()
+  return totalPoints >= rewardThreshold
 }
 
 export function getCustomerSales(customerId, sales = []) {
