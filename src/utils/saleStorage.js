@@ -1,5 +1,6 @@
+import { getLoyaltySettings } from './loyaltySettings'
+
 const STORAGE_KEY = 'salesApp_sales'
-const POINTS_PER_CURRENCY_UNIT = 1000
 
 export function addSale({ amount, customerId, description = '' }) {
   if (!amount || amount <= 0) {
@@ -13,10 +14,11 @@ export function addSale({ amount, customerId, description = '' }) {
 
   const sales = getSales()
 
-  // Calculate points: 1 point per 1000 currency units
+  // Calculate points using configurable pointsPerUnit
   // Only award points if customer is linked
+  const { pointsPerUnit } = getLoyaltySettings()
   const pointsEarned = customerId
-    ? Math.floor(numericAmount / POINTS_PER_CURRENCY_UNIT)
+    ? Math.floor(numericAmount / pointsPerUnit)
     : 0
 
   const sale = {

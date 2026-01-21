@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { addSale, getSales } from './saleStorage'
+import { saveLoyaltySettings } from './loyaltySettings'
 
 describe('saleStorage', () => {
   beforeEach(() => {
@@ -125,6 +126,50 @@ describe('saleStorage', () => {
       })
 
       expect(sale.description).toBe('')
+    })
+  })
+
+  describe('configurable loyalty settings', () => {
+    it('should use updated pointsPerUnit for new sales', () => {
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 50 })
+
+      const sale = addSale({ amount: 5000, customerId: 'customer_123' })
+
+      expect(sale.pointsEarned).toBe(10) // 5000 / 500 = 10
+    })
+
+    it('should not modify existing sales when settings change', () => {
+      // Create sale with default settings (1000 pointsPerUnit)
+      const oldSale = addSale({ amount: 5000, customerId: 'customer_123' })
+      expect(oldSale.pointsEarned).toBe(5) // 5000 / 1000 = 5
+
+      // Change settings
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 50 })
+
+      // Create new sale with new settings
+      const newSale = addSale({ amount: 5000, customerId: 'customer_456' })
+      expect(newSale.pointsEarned).toBe(10) // 5000 / 500 = 10
+
+      // Verify old sale still has original points
+      const allSales = getSales()
+      const retrievedOldSale = allSales.find(s => s.id === oldSale.id)
+      expect(retrievedOldSale.pointsEarned).toBe(5)
+    })
+
+    it('should still award 0 points for anonymous sales with custom settings', () => {
+      saveLoyaltySettings({ pointsPerUnit: 500, rewardThreshold: 50 })
+
+      const sale = addSale({ amount: 5000, customerId: null })
+
+      expect(sale.pointsEarned).toBe(0)
+    })
+
+    it('should use floor rounding with custom pointsPerUnit', () => {
+      saveLoyaltySettings({ pointsPerUnit: 300, rewardThreshold: 50 })
+
+      const sale = addSale({ amount: 1000, customerId: 'customer_123' })
+
+      expect(sale.pointsEarned).toBe(3) // floor(1000 / 300) = 3
     })
   })
 })
