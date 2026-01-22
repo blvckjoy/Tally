@@ -98,9 +98,64 @@ The system is divided into **three primary layers**:
 
 ---
 
-## 4. Key System Interactions
+## 4. Reusable UI Components
 
-### 4.1 Record Sale Interaction
+### 4.1 ConfirmationModal
+
+**Purpose:**
+
+Provide a consistent, accessible way to confirm destructive actions across the application.
+
+**Responsibilities:**
+
+- Display confirmation message and context
+- Block background interactions (modal overlay)
+- Manage focus and keyboard navigation
+- Prevent accidental dismissal (explicit choice required)
+- Provide accessible experience (ARIA, focus management)
+
+**Usage Pattern:**
+
+```text
+Parent Component
+ |
+ | manages state (isOpen, itemToDelete)
+ |
+ | passes props (title, message, onConfirm, onClose)
+ v
+ConfirmationModal
+ |
+ | handles UI rendering
+ | manages focus trap
+ | locks body scroll
+ |
+ | triggers callbacks
+ v
+Parent Component
+ |
+ | executes business logic
+ | updates application state
+```
+
+**Design Constraints:**
+
+- Modal must not make decisions (business logic stays in parent)
+- Modal is presentation-only (reusable across contexts)
+- Parent component controls when modal opens/closes
+- Modal provides consistent UX for all destructive actions
+
+**Future Use Cases:**
+
+- Delete sale confirmation
+- Clear all data confirmation
+- Reset settings confirmation
+- Any other destructive action requiring user consent
+
+---
+
+## 5. Key System Interactions
+
+### 5.1 Record Sale Interaction
 
 ```text
 User
@@ -123,7 +178,7 @@ Data Storage
 
 ---
 
-### 4.2 Add Customer Interaction
+### 5.2 Add Customer Interaction
 
 ```text
 User
@@ -144,7 +199,7 @@ Data Storage
 
 ---
 
-## 5. Data Ownership Rules
+## 6. Data Ownership Rules
 
 - Frontend owns **temporary UI state** only
 - Application Logic owns **business decisions**
@@ -154,7 +209,7 @@ No component may bypass another.
 
 ---
 
-## 6. Error Handling Strategy
+## 7. Error Handling Strategy
 
 - Validation errors handled in Application Logic
 - User-friendly messages surfaced by UI
@@ -164,7 +219,7 @@ System must never fail silently.
 
 ---
 
-## 7. What This Design Explicitly Avoids
+## 8. What This Design Explicitly Avoids
 
 - UI directly mutating stored data
 - Business rules scattered across UI
@@ -173,7 +228,7 @@ System must never fail silently.
 
 ---
 
-## 8. Scalability Considerations (Future)
+## 9. Scalability Considerations (Future)
 
 Without changing core design, the system could later:
 
@@ -185,7 +240,7 @@ These are **not implemented now**, but the structure allows them.
 
 ---
 
-## 9. Design Consistency Checklist
+## 10. Design Consistency Checklist
 
 This design is valid only if:
 

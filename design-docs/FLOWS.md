@@ -218,14 +218,17 @@ Browse all customers and access their records.
 2. List displays all customers showing:
    - Customer name
    - Phone number (if present)
-3. User can click on any customer to edit
-4. User can delete any customer
+   - Loyalty points total
+   - Date added
+   - Reward badge (if threshold reached)
+3. User can click on customer name to view details
+4. User can click "Delete" button to remove customer (see Flow 11)
 
 ### Notes
 
-- No separate "view details" screen in MVP
-- Click → Edit (not View)
-- Customer sales history and loyalty points visible later (out of STEP 1 scope)
+- Delete action opens confirmation modal (non-disruptive to layout)
+- Customer info clickable for viewing details
+- List is responsive on mobile and desktop
 
 ---
 
@@ -263,7 +266,58 @@ User clicks on a customer in the customer list.
 
 ---
 
-## 11. Flow: View Dashboard
+## 11. Flow: Delete Customer
+
+### Goal
+
+Allow user to permanently remove a customer from the system with clear confirmation.
+
+### Entry Point
+
+User clicks "Delete" button on a customer in the customer list.
+
+### Steps
+
+1. User clicks "Delete" button for a customer
+2. Confirmation modal appears with:
+   - Title: "Delete customer?"
+   - Message: "This will remove the customer, but past sales will remain."
+   - Cancel and Delete buttons
+3. Modal blocks all background interactions
+4. User selects one of:
+   - **Cancel**: Modal closes, no changes made
+   - **Delete**: Customer is permanently removed
+
+### Success State
+
+- Customer is deleted from storage
+- User returns to customer list
+- Success message shown: "Customer deleted"
+- Success message auto-dismisses after 3 seconds
+
+### Modal Behavior
+
+- Backdrop prevents scrolling and clicking outside modal
+- Focus automatically moves to Cancel button
+- Tab key cycles only through modal buttons
+- ESC key is disabled (requires explicit Cancel/Delete choice)
+- Modal scales in smoothly with fade animation
+
+### Error Handling
+
+- If deletion fails → show error message, keep modal open
+- If user clicks Cancel → modal closes immediately, no confirmation needed
+
+### Notes
+
+- Customer deletion is permanent (no soft delete)
+- Past sales linked to this customer remain in the system
+- Customer name in historical sales shows as-is (immutable)
+- Modal is reusable for other destructive actions
+
+---
+
+## 12. Flow: View Dashboard
 
 ### Goal
 
@@ -282,7 +336,7 @@ Answer key business questions at a glance.
 
 ---
 
-## 12. Flow: Edit Business Settings
+## 13. Flow: Edit Business Settings
 
 ### Goal
 
@@ -314,7 +368,7 @@ Allow owner to adjust loyalty rules after initial setup.
 
 ---
 
-## 13. Flow: Loyalty Reward Threshold Reached
+## 14. Flow: Loyalty Reward Threshold Reached
 
 ### Goal
 
@@ -338,7 +392,7 @@ Make loyalty value obvious without complex mechanics.
 
 ---
 
-## 14. Flow: Export Data (Backup)
+## 15. Flow: Export Data (Backup)
 
 ### Goal
 
@@ -370,7 +424,7 @@ Allow user to create a backup of all data for safekeeping.
 
 ---
 
-## 15. Flow: Error States (General)
+## 16. Flow: Error States (General)
 
 ### Principles
 
@@ -385,7 +439,7 @@ Allow user to create a backup of all data for safekeeping.
 
 ---
 
-## 16. Flow Completion Criteria
+## 17. Flow Completion Criteria
 
 Flows are considered successful if:
 

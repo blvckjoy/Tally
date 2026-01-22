@@ -8,13 +8,14 @@ Tally is designed for small businesses that want to track regular customers and 
 
 ## Features
 
-- **Customer Management** — Add, edit, and delete customers with inline confirmations
+- **Customer Management** — Add, edit, and delete customers with modal confirmations
 - **Sales Recording** — Log transactions linked to customers
 - **Configurable Loyalty** — Customize earning rules and reward thresholds (forward-only)
 - **Rewards Recognition** — Visual indicators when customers reach reward thresholds
 - **Dashboard** — At-a-glance metrics for today, this month, and top customers
 - **Settings** — Dedicated view for configuring loyalty rules
 - **Responsive Navigation** — Top nav on desktop, bottom nav on mobile
+- **Reusable Confirmation Modal** — Accessible modal dialogs for destructive actions
 
 ## Architecture
 
@@ -22,13 +23,14 @@ Tally is designed for small businesses that want to track regular customers and 
 src/
 ├── App.jsx              # Main app with routing and state
 ├── components/
-│   ├── CustomerList     # Customer directory with search and delete
+│   ├── CustomerList     # Customer directory with modal delete
 │   ├── CustomerDetail   # Individual customer view with sales history
 │   ├── CustomerForm     # Add/edit customer form
 │   ├── SaleForm         # Record new sale
 │   ├── Dashboard        # Metrics overview (read-only)
 │   ├── Settings         # Settings container
 │   ├── LoyaltySettings  # Configure loyalty rules
+│   ├── ConfirmationModal # Reusable modal for destructive actions
 │   └── BottomNav        # Mobile navigation bar
 └── utils/
     ├── customerStorage  # Customer CRUD operations
