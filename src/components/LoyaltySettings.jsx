@@ -93,6 +93,10 @@ function LoyaltySettings() {
   return (
     <div className="loyalty-settings">
       <div className="section-title">Loyalty Rules</div>
+      <p className="settings-intro">
+        These settings control how customers earn loyalty points.
+        Default values work for most businesses — change them only if needed.
+      </p>
 
       <div className="settings-form">
         <div className="setting-row">
