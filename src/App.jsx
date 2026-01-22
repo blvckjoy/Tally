@@ -79,6 +79,7 @@ function App() {
   const handleDeleteCustomer = (customerId) => {
     deleteCustomer(customerId)
     loadCustomers()
+    setSuccessMessage('Customer deleted')
   }
 
   // Record sale
@@ -178,6 +179,11 @@ function App() {
       <main className="app-main">
         {currentView === 'list' && (
           <div className="list-container">
+            {successMessage && (
+              <div className="success-message">
+                {successMessage}
+              </div>
+            )}
             <div className="list-header">
               <h2>Customers</h2>
               <div className="header-buttons">

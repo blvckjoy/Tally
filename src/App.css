@@ -336,6 +336,38 @@
   flex-shrink: 0;
 }
 
+/* Delete confirmation inline */
+.delete-confirmation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0.5rem 0;
+}
+
+.delete-confirmation-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  text-align: right;
+}
+
+.delete-confirmation-text strong {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.delete-confirmation-text span {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
 /* Empty state */
 .empty-state {
   text-align: center;

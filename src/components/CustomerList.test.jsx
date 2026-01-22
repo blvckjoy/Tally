@@ -128,13 +128,10 @@ describe('CustomerList', () => {
     expect(mockOnEdit).toHaveBeenCalledWith('1')
   })
 
-  it('should show delete confirmation before calling onDelete', async () => {
+  it('should show inline confirmation UI when delete button clicked', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
-
-    // Mock window.confirm
-    window.confirm = vi.fn(() => true)
 
     render(
       <CustomerList
@@ -148,17 +145,40 @@ describe('CustomerList', () => {
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
-    expect(window.confirm).toHaveBeenCalled()
+    expect(screen.getByText('Delete customer?')).toBeInTheDocument()
+    expect(screen.getByText('This will remove the customer, but past sales will remain.')).toBeInTheDocument()
+    expect(screen.getByText('Cancel')).toBeInTheDocument()
+  })
+
+  it('should call onDelete when confirm delete is clicked', async () => {
+    const user = userEvent.setup()
+    const mockOnEdit = vi.fn()
+    const mockOnDelete = vi.fn()
+
+    render(
+      <CustomerList
+        customers={mockCustomers}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+        sales={[]}
+      />
+    )
+
+    // Click first delete button to show confirmation
+    const deleteButtons = screen.getAllByText('Delete')
+    await user.click(deleteButtons[0])
+
+    // Now click the confirm delete button (inside confirmation UI)
+    const confirmDeleteButtons = screen.getAllByText('Delete')
+    await user.click(confirmDeleteButtons[0])
+
     expect(mockOnDelete).toHaveBeenCalledWith('1')
   })
 
-  it('should not call onDelete if confirmation cancelled', async () => {
+  it('should not call onDelete if cancel is clicked', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
-
-    // Mock window.confirm to return false
-    window.confirm = vi.fn(() => false)
 
     render(
       <CustomerList
@@ -172,7 +192,36 @@ describe('CustomerList', () => {
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
+    const cancelButton = screen.getByText('Cancel')
+    await user.click(cancelButton)
+
     expect(mockOnDelete).not.toHaveBeenCalled()
+  })
+
+  it('should hide confirmation UI after cancel is clicked', async () => {
+    const user = userEvent.setup()
+    const mockOnEdit = vi.fn()
+    const mockOnDelete = vi.fn()
+
+    render(
+      <CustomerList
+        customers={mockCustomers}
+        onEdit={mockOnEdit}
+        onDelete={mockOnDelete}
+        sales={[]}
+      />
+    )
+
+    const deleteButtons = screen.getAllByText('Delete')
+    await user.click(deleteButtons[0])
+
+    expect(screen.getByText('Delete customer?')).toBeInTheDocument()
+
+    const cancelButton = screen.getByText('Cancel')
+    await user.click(cancelButton)
+
+    expect(screen.queryByText('Delete customer?')).not.toBeInTheDocument()
+    expect(screen.queryByText('Cancel')).not.toBeInTheDocument()
   })
 
   it('should show empty state when no customers', () => {
