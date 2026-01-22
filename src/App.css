@@ -978,15 +978,15 @@
 
 /* Mobile - Modal */
 @media (max-width: 480px) {
-  .modal-card {
-    max-width: 100%;
+  .modal-backdrop {
+    padding: 1rem 2.5rem;
   }
 
-  .modal-footer {
-    flex-direction: column-reverse;
+  .modal-card {
+    max-width: 320px;
   }
 
   .modal-footer .btn {
-    width: 100%;
+    flex: 1;
   }
 }
