@@ -907,16 +907,16 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(26, 25, 24, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
-  animation: fadeIn 0.15s ease-out;
+  animation: modalBackdropFadeIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeIn {
+@keyframes modalBackdropFadeIn {
   from {
     opacity: 0;
   }
@@ -928,19 +928,20 @@
 .modal-card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(26, 25, 24, 0.1), 0 10px 10px -5px rgba(26, 25, 24, 0.04);
   max-width: 400px;
   width: 100%;
-  animation: scaleIn 0.15s ease-out;
+  animation: modalSlideUp 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center;
 }
 
-@keyframes scaleIn {
+@keyframes modalSlideUp {
   from {
-    transform: scale(0.95);
+    transform: translateY(4px) scale(0.98);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
