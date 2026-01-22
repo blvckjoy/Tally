@@ -426,3 +426,11 @@ Tally now supports **trustworthy, configurable loyalty rules** suitable for real
 
 ### Next planned area
 **Navigation & Mobile UX polish**, starting with evaluation of a bottom navigation bar for mobile users.
+
+
+## Navigation
+
+- Desktop: Top header navigation (Customers, Dashboard, Settings)
+- Mobile: Bottom navigation bar
+- Dashboard is read-only
+- Settings is a first-class destination
