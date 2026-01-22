@@ -59,8 +59,6 @@ describe('Dashboard', () => {
     },
   ]
 
-  const mockOnBack = vi.fn()
-
   beforeEach(() => {
     vi.clearAllMocks()
     // Set default mock return values
@@ -79,7 +77,7 @@ describe('Dashboard', () => {
   describe('Display tests', () => {
     it('renders dashboard header', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -87,7 +85,7 @@ describe('Dashboard', () => {
 
     it('displays today\'s revenue formatted as currency', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       // Today's revenue should be ₦12,500
@@ -96,7 +94,7 @@ describe('Dashboard', () => {
 
     it('displays today\'s transactions count', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       // There are multiple "Transactions:" labels, check that at least one exists
@@ -109,7 +107,7 @@ describe('Dashboard', () => {
 
     it('displays monthly revenue formatted as currency', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText(/50,000/)).toBeInTheDocument()
@@ -118,7 +116,7 @@ describe('Dashboard', () => {
     it('displays monthly transactions count', () => {
       getMonthlyTransactions.mockReturnValue(10)
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('10')).toBeInTheDocument()
@@ -126,7 +124,7 @@ describe('Dashboard', () => {
 
     it('displays average sale formatted as currency', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Average Sale:')).toBeInTheDocument()
@@ -135,7 +133,7 @@ describe('Dashboard', () => {
 
     it('displays total customers count', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Total Customers:')).toBeInTheDocument()
@@ -143,7 +141,7 @@ describe('Dashboard', () => {
 
     it('displays rewards pending count', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Rewards Pending:')).toBeInTheDocument()
@@ -152,7 +150,7 @@ describe('Dashboard', () => {
 
     it('displays top customers list', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Top Customers')).toBeInTheDocument()
@@ -160,7 +158,7 @@ describe('Dashboard', () => {
 
     it('shows customer name and points in top customers', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText(/Alice Johnson/)).toBeInTheDocument()
@@ -172,26 +170,13 @@ describe('Dashboard', () => {
     it('shows empty state when no customers have points', () => {
       getTopCustomers.mockReturnValue([])
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('No customers with points yet')).toBeInTheDocument()
     })
   })
 
-  describe('Interaction tests', () => {
-    it('calls onBack when back button clicked', async () => {
-      const user = userEvent.setup()
-      render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
-      )
-
-      const backButton = screen.getByRole('button', { name: /back to customers/i })
-      await user.click(backButton)
-
-      expect(mockOnBack).toHaveBeenCalled()
-    })
-  })
 
   describe('Edge cases', () => {
     it('handles empty sales array', () => {
@@ -204,7 +189,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={[]} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={[]} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -217,7 +202,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={mockSales} customers={[]} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={[]} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -234,7 +219,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={null} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={null} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -250,7 +235,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={undefined} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={undefined} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -261,7 +246,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={mockSales} customers={null} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={null} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -272,7 +257,7 @@ describe('Dashboard', () => {
       getTopCustomers.mockReturnValue([])
 
       render(
-        <Dashboard sales={mockSales} customers={undefined} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={undefined} />
       )
 
       expect(screen.getByText('Dashboard')).toBeInTheDocument()
@@ -282,7 +267,7 @@ describe('Dashboard', () => {
   describe('Section structure', () => {
     it('renders Today section', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Today')).toBeInTheDocument()
@@ -290,7 +275,7 @@ describe('Dashboard', () => {
 
     it('renders This Month section', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('This Month')).toBeInTheDocument()
@@ -298,7 +283,7 @@ describe('Dashboard', () => {
 
     it('renders Customers section', () => {
       render(
-        <Dashboard sales={mockSales} customers={mockCustomers} onBack={mockOnBack} />
+        <Dashboard sales={mockSales} customers={mockCustomers} />
       )
 
       expect(screen.getByText('Customers')).toBeInTheDocument()

@@ -41,11 +41,28 @@ vi.mock('./components/SaleForm', () => ({
 }))
 
 vi.mock('./components/Dashboard', () => ({
-  default: ({ sales, customers, onBack }) => (
+  default: ({ sales, customers }) => (
     <div data-testid="dashboard">
       Dashboard Mock
-      <button onClick={onBack}>Back to Customers</button>
     </div>
+  ),
+}))
+
+vi.mock('./components/Settings', () => ({
+  default: () => (
+    <div data-testid="settings">
+      Settings Mock
+    </div>
+  ),
+}))
+
+vi.mock('./components/BottomNav', () => ({
+  default: ({ currentView, onNavigate }) => (
+    <nav data-testid="bottom-nav">
+      <button onClick={() => onNavigate('list')}>Nav Customers</button>
+      <button onClick={() => onNavigate('dashboard')}>Nav Dashboard</button>
+      <button onClick={() => onNavigate('settings')}>Nav Settings</button>
+    </nav>
   ),
 }))
 
@@ -71,44 +88,83 @@ describe('App', () => {
     vi.clearAllMocks()
   })
 
-  describe('Dashboard navigation', () => {
-    it('shows dashboard button on customer list', () => {
+  describe('Header navigation', () => {
+    it('shows header navigation with all tabs', () => {
       render(<App />)
 
-      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
-      expect(dashboardButton).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Customers' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Dashboard' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Settings' })).toBeInTheDocument()
     })
 
-    it('navigates to dashboard when dashboard button clicked', async () => {
+    it('navigates to dashboard via header nav', async () => {
       const user = userEvent.setup()
       render(<App />)
 
-      // Click the dashboard button
-      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
-      await user.click(dashboardButton)
+      await user.click(screen.getByRole('button', { name: 'Dashboard' }))
 
-      // Should now show the Dashboard component
       expect(screen.getByTestId('dashboard')).toBeInTheDocument()
-      // Should not show customer list
       expect(screen.queryByTestId('customer-list')).not.toBeInTheDocument()
     })
 
-    it('returns to customer list from dashboard', async () => {
+    it('navigates to customers via header nav', async () => {
       const user = userEvent.setup()
       render(<App />)
 
-      // Navigate to dashboard
-      const dashboardButton = screen.getByRole('button', { name: /dashboard/i })
-      await user.click(dashboardButton)
+      // Navigate to dashboard first
+      await user.click(screen.getByRole('button', { name: 'Dashboard' }))
 
-      // Click back button in Dashboard
-      const backButton = screen.getByRole('button', { name: /back to customers/i })
-      await user.click(backButton)
+      // Then back to customers
+      await user.click(screen.getByRole('button', { name: 'Customers' }))
 
-      // Should now show customer list
       expect(screen.getByTestId('customer-list')).toBeInTheDocument()
-      // Should not show dashboard
       expect(screen.queryByTestId('dashboard')).not.toBeInTheDocument()
+    })
+
+    it('navigates to settings via header nav', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      await user.click(screen.getByRole('button', { name: 'Settings' }))
+
+      expect(screen.getByTestId('settings')).toBeInTheDocument()
+      expect(screen.queryByTestId('customer-list')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Bottom navigation integration', () => {
+    it('renders bottom navigation', () => {
+      render(<App />)
+      expect(screen.getByTestId('bottom-nav')).toBeInTheDocument()
+    })
+
+    it('navigates to settings via bottom nav', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      await user.click(screen.getByRole('button', { name: 'Nav Settings' }))
+      expect(screen.getByTestId('settings')).toBeInTheDocument()
+    })
+
+    it('navigates to dashboard via bottom nav', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      await user.click(screen.getByRole('button', { name: 'Nav Dashboard' }))
+      expect(screen.getByTestId('dashboard')).toBeInTheDocument()
+    })
+
+    it('navigates back to customers via bottom nav', async () => {
+      const user = userEvent.setup()
+      render(<App />)
+
+      // Go to settings first
+      await user.click(screen.getByRole('button', { name: 'Nav Settings' }))
+      expect(screen.getByTestId('settings')).toBeInTheDocument()
+
+      // Then back to customers
+      await user.click(screen.getByRole('button', { name: 'Nav Customers' }))
+      expect(screen.getByTestId('customer-list')).toBeInTheDocument()
     })
   })
 })

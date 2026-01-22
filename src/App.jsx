@@ -12,11 +12,13 @@ import CustomerForm from './components/CustomerForm'
 import CustomerDetail from './components/CustomerDetail'
 import SaleForm from './components/SaleForm'
 import Dashboard from './components/Dashboard'
+import Settings from './components/Settings'
+import BottomNav from './components/BottomNav'
 
 function App() {
   const [customers, setCustomers] = useState([])
   const [sales, setSales] = useState([])
-  const [currentView, setCurrentView] = useState('list') // 'list' | 'detail' | 'addCustomer' | 'editCustomer' | 'recordSale' | 'dashboard'
+  const [currentView, setCurrentView] = useState('list') // 'list' | 'detail' | 'addCustomer' | 'editCustomer' | 'recordSale' | 'dashboard' | 'settings'
   const [selectedCustomerId, setSelectedCustomerId] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
 
@@ -122,6 +124,23 @@ function App() {
     setSuccessMessage(null)
   }
 
+  const handleShowSettings = () => {
+    setCurrentView('settings')
+    setSelectedCustomerId(null)
+    setSuccessMessage(null)
+  }
+
+  // Bottom nav handler
+  const handleBottomNavNavigate = (view) => {
+    if (view === 'settings') {
+      handleShowSettings()
+    } else if (view === 'dashboard') {
+      handleShowDashboard()
+    } else {
+      handleBack()
+    }
+  }
+
   // Get selected customer
   const selectedCustomer = selectedCustomerId
     ? customers.find(c => c.id === selectedCustomerId)
@@ -134,6 +153,26 @@ function App() {
           <img src="/tally-logo.svg" alt="" className="app-logo" />
           <h1>Tally</h1>
         </div>
+        <nav className="header-nav">
+          <button
+            className={`header-nav-link ${['list', 'detail', 'addCustomer', 'editCustomer', 'recordSale'].includes(currentView) ? 'header-nav-link--active' : ''}`}
+            onClick={handleBack}
+          >
+            Customers
+          </button>
+          <button
+            className={`header-nav-link ${currentView === 'dashboard' ? 'header-nav-link--active' : ''}`}
+            onClick={handleShowDashboard}
+          >
+            Dashboard
+          </button>
+          <button
+            className={`header-nav-link ${currentView === 'settings' ? 'header-nav-link--active' : ''}`}
+            onClick={handleShowSettings}
+          >
+            Settings
+          </button>
+        </nav>
       </header>
 
       <main className="app-main">
@@ -142,12 +181,6 @@ function App() {
             <div className="list-header">
               <h2>Customers</h2>
               <div className="header-buttons">
-                <button
-                  className="btn btn-ghost"
-                  onClick={handleShowDashboard}
-                >
-                  Dashboard
-                </button>
                 <button
                   className="btn btn-primary"
                   onClick={handleShowAddCustomer}
@@ -208,10 +241,18 @@ function App() {
           <Dashboard
             sales={sales}
             customers={customers}
-            onBack={() => setCurrentView('list')}
           />
         )}
+
+        {currentView === 'settings' && (
+          <Settings />
+        )}
       </main>
+
+      <BottomNav
+        currentView={currentView}
+        onNavigate={handleBottomNavNavigate}
+      />
     </div>
   )
 }

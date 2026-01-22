@@ -7,9 +7,8 @@ import {
   getRewardsPendingCount,
   getTopCustomers,
 } from '../utils/dashboardCalculator'
-import LoyaltySettings from './LoyaltySettings'
 
-function Dashboard({ sales, customers, onBack }) {
+function Dashboard({ sales, customers }) {
   // Handle null/undefined props defensively
   const safeSales = sales || []
   const safeCustomers = customers || []
@@ -91,16 +90,6 @@ function Dashboard({ sales, customers, onBack }) {
           <p className="empty-state">No customers with points yet</p>
         )}
       </div>
-
-      {/* Loyalty Settings Section */}
-      <div className="dashboard-section">
-        <LoyaltySettings />
-      </div>
-
-      {/* Back Button */}
-      <button className="btn btn-secondary back-button" onClick={onBack}>
-        ← Back to Customers
-      </button>
     </div>
   )
 }
