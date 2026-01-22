@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { getCustomerTotalPoints, isRewardAvailable } from '../utils/loyaltyCalculator'
+import ConfirmationModal from './ConfirmationModal'
 
 function CustomerList({ customers, onEdit, onDelete, sales }) {
-  const [confirmingDeleteId, setConfirmingDeleteId] = useState(null)
+  const [modalState, setModalState] = useState({ isOpen: false, customerId: null, customerName: '' })
 
   if (customers.length === 0) {
     return (
@@ -12,17 +13,17 @@ function CustomerList({ customers, onEdit, onDelete, sales }) {
     )
   }
 
-  const handleDeleteClick = (id) => {
-    setConfirmingDeleteId(id)
+  const handleDeleteClick = (id, name) => {
+    setModalState({ isOpen: true, customerId: id, customerName: name })
   }
 
-  const handleConfirmDelete = (id) => {
-    onDelete(id)
-    setConfirmingDeleteId(null)
+  const handleConfirmDelete = () => {
+    onDelete(modalState.customerId)
+    setModalState({ isOpen: false, customerId: null, customerName: '' })
   }
 
-  const handleCancelDelete = () => {
-    setConfirmingDeleteId(null)
+  const handleCloseModal = () => {
+    setModalState({ isOpen: false, customerId: null, customerName: '' })
   }
 
   const formatDate = (dateString) => {
@@ -59,40 +60,27 @@ function CustomerList({ customers, onEdit, onDelete, sales }) {
                 <div className="customer-points">{totalPoints} points</div>
               </div>
               <div className="customer-actions">
-                {confirmingDeleteId === customer.id ? (
-                  <div className="delete-confirmation">
-                    <div className="delete-confirmation-text">
-                      <strong>Delete customer?</strong>
-                      <span>This will remove the customer, but past sales will remain.</span>
-                    </div>
-                    <div className="delete-confirmation-buttons">
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleConfirmDelete(customer.id)}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="btn btn-secondary"
-                        onClick={handleCancelDelete}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteClick(customer.id)}
-                  >
-                    Delete
-                  </button>
-                )}
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteClick(customer.id, customer.name)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           )
         })}
       </div>
+      <ConfirmationModal
+        isOpen={modalState.isOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        title="Delete customer?"
+        message="This will remove the customer, but past sales will remain."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+      />
     </div>
   )
 }

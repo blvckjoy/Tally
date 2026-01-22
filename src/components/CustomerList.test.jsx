@@ -128,7 +128,7 @@ describe('CustomerList', () => {
     expect(mockOnEdit).toHaveBeenCalledWith('1')
   })
 
-  it('should show inline confirmation UI when delete button clicked', async () => {
+  it('should show confirmation modal when delete button clicked', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
@@ -145,12 +145,13 @@ describe('CustomerList', () => {
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByText('Delete customer?')).toBeInTheDocument()
     expect(screen.getByText('This will remove the customer, but past sales will remain.')).toBeInTheDocument()
-    expect(screen.getByText('Cancel')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
   })
 
-  it('should call onDelete when confirm delete is clicked', async () => {
+  it('should call onDelete when confirm delete is clicked in modal', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
@@ -164,18 +165,19 @@ describe('CustomerList', () => {
       />
     )
 
-    // Click first delete button to show confirmation
+    // Click first delete button to show modal
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
-    // Now click the confirm delete button (inside confirmation UI)
-    const confirmDeleteButtons = screen.getAllByText('Delete')
-    await user.click(confirmDeleteButtons[0])
+    // Now click the confirm delete button inside modal
+    const modal = screen.getByRole('dialog')
+    const confirmButton = modal.querySelector('.btn-danger')
+    await user.click(confirmButton)
 
     expect(mockOnDelete).toHaveBeenCalledWith('1')
   })
 
-  it('should not call onDelete if cancel is clicked', async () => {
+  it('should not call onDelete if cancel is clicked in modal', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
@@ -192,13 +194,13 @@ describe('CustomerList', () => {
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
-    const cancelButton = screen.getByText('Cancel')
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
 
     expect(mockOnDelete).not.toHaveBeenCalled()
   })
 
-  it('should hide confirmation UI after cancel is clicked', async () => {
+  it('should hide modal after cancel is clicked', async () => {
     const user = userEvent.setup()
     const mockOnEdit = vi.fn()
     const mockOnDelete = vi.fn()
@@ -215,13 +217,14 @@ describe('CustomerList', () => {
     const deleteButtons = screen.getAllByText('Delete')
     await user.click(deleteButtons[0])
 
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(screen.getByText('Delete customer?')).toBeInTheDocument()
 
-    const cancelButton = screen.getByText('Cancel')
+    const cancelButton = screen.getByRole('button', { name: 'Cancel' })
     await user.click(cancelButton)
 
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(screen.queryByText('Delete customer?')).not.toBeInTheDocument()
-    expect(screen.queryByText('Cancel')).not.toBeInTheDocument()
   })
 
   it('should show empty state when no customers', () => {
